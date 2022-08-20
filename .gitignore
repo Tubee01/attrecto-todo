@@ -1,6 +1,7 @@
 /database/pgdata
 # compiled output
 /frontend/build
+/backend/dist
 /backend/node_modules
 /frontend/node_modules
 
