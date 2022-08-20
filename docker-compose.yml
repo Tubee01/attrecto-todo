@@ -29,20 +29,21 @@ services:
     build:
       context: ./frontend
     volumes:
-      - ./frontend/build:/build
+      - frontend-content:/home/node/frontend/build
     ports:
       - "3000:3000"
- 
   nginx:
     container_name: nginx-container
     build:
       context: ./nginx
     volumes:
-      - ./frontend/build:/www
+      - frontend-content:/www
       - ./nginx/:/etc/nginx
       - ./nginx/log:/var/log/nginx
     ports:
       - "80:80"
       # - "443:443"
     links:
-      - backend
+      - frontend
+volumes:
+  frontend-content:
