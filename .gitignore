@@ -4,7 +4,6 @@
 /backend/dist
 /backend/node_modules
 /frontend/node_modules
-/backend/**/config/configuration.ts
 
 # misc
 .DS_Store
