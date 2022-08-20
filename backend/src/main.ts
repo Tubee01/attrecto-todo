@@ -8,10 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger(bootstrap.name);
   const config = app.get(ConfigService);
-  app.useGlobalPipes(new ValidationPipe());
-
-
-
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+  }));
 
   await app.listen(config.get(API_PORT));
   logger.log(`I'm listening on ${await app.getUrl()}`);
