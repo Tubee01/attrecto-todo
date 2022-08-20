@@ -17,7 +17,7 @@ services:
     build:
       context: ./backend
     volumes:
-      - ./backend/node_modules:/node_modules
+      - ./backend/node_modules:/home/node/backend/node_modules
     ports:
       - "8080:8080"
     links:
