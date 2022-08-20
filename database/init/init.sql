@@ -3,9 +3,10 @@ DROP DATABASE IF EXISTS master;
 CREATE DATABASE master;
 
 \c master;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE "User" (
-    "id" UUID NOT NULL,
+    "id" UUID DEFAULT uuid_generate_v4 (),
     "name" varchar(255) NOT NULL,
     "email" varchar(255) NOT NULL,
     "password" varchar(255) NOT NULL,
@@ -15,7 +16,7 @@ CREATE TABLE "User" (
 );
 
 CREATE TABLE "Todo"(
-    "id" UUID NOT NULL,
+    "id" UUID DEFAULT uuid_generate_v4 (),
     "name" varchar(255) NOT NULL,
     "description" varchar(500),
     "user_id" uuid NOT NULL,
