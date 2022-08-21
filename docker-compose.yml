@@ -28,26 +28,27 @@ services:
       - database
     depends_on:
       - database
-  frontend:
-    container_name: frontend-container
+  # frontend:
+  #   container_name: frontend-container
+  #   build:
+  #     context: ./frontend
+  #   volumes:
+  #     - frontend-content:/home/node/frontend/build
+  #   ports:
+  #     - "3000:3000"
+  nginx-react:
+    container_name: nginx-react-container
     build:
-      context: ./frontend
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - frontend-content:/home/node/frontend/build
-    ports:
-      - "3000:3000"
-  nginx:
-    container_name: nginx-container
-    build:
-      context: ./nginx
-    volumes:
-      - frontend-content:/www
+      # - frontend-content:/www
       - ./nginx/:/etc/nginx
       - ./nginx/log:/var/log/nginx
     ports:
       - "80:80"
       # - "443:443"
-    links:
-      - frontend
-volumes:
-  frontend-content:
+      # links:
+      #   - frontend
+      # volumes:
+      #   frontend-content:
