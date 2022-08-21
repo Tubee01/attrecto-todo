@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useContext } from "react";
+import { Route, Routes } from "react-router-dom";
+import { AuthContext } from "./context/AuthContext";
+import Login from "./routes/login/Login";
+import Home from "./routes/home/Home";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+import PageLoading from "./lib/components/PageLoading";
+import Registration from "./routes/registration/Registration";
+
+const App = () => {
+  const value = useContext(AuthContext);
+  const auth = value?.auth;
+  const isLoading = value?.isLoading;
+  let routes = (
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/registration" element={<Registration />} />
+    </Routes>
   );
-}
+
+  if (auth?.isAuthenticated) {
+    routes = (
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    );
+  }
+
+  return isLoading ? <PageLoading /> : routes;
+};
 
 export default App;

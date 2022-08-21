@@ -6,7 +6,17 @@ import { API_PORT } from './utils/constants';
 const { fork } = require('child_process');
 const path = require('path');
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      credentials: true,
+      origin: [
+        'http://localhost:3000',
+        'http://192.168.1.180:3000',
+      ],
+    },
+  });
+  // enable cors requests
+
   const logger = new Logger(bootstrap.name);
   const config = app.get(ConfigService);
   app.useGlobalPipes(
