@@ -6,6 +6,7 @@ import Home from "./routes/home/Home";
 
 import PageLoading from "./lib/components/PageLoading";
 import Registration from "./routes/registration/Registration";
+import Todos from "./routes/todo/Todos";
 
 const App = () => {
   const value = useContext(AuthContext);
@@ -22,6 +23,7 @@ const App = () => {
     routes = (
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/todos" element={<Todos />} />
       </Routes>
     );
   }

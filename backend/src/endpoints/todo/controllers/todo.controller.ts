@@ -27,7 +27,7 @@ export class TodoController {
   constructor(
     private readonly todoService: TodoService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   @Post()
   async create(@Body() body: CreateTodoDTO) {
@@ -40,7 +40,7 @@ export class TodoController {
 
   @Get('user/:id')
   async findAllByUser(@Param('id', ParseUUIDPipe) id: string) {
-    const user = await this.userService.findByUnique;
+    const user = await this.userService.findByUnique(id);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }

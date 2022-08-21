@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { post } from "..";
 import { useAuthContext } from "../../../context/AuthContext";
 
-export const AuthRegistration = () => {
+const AuthRegistration = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState<object>({
         name: '',
