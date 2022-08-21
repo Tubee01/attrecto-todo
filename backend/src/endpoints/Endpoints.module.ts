@@ -6,4 +6,4 @@ import { TodoModule } from './todo/todo.module';
 @Module({
   imports: [UserModule, AuthModule, TodoModule],
 })
-export class EndpointsModule { }
+export class EndpointsModule {}

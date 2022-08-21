@@ -41,6 +41,7 @@ CREATE TABLE "Todo"(
     "title" varchar(255) NOT NULL,
     "description" varchar(500),
     "user_id" uuid NOT NULL,
+    "date_till" TIMESTAMP(3) NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "done" boolean DEFAULT false NOT NULL,
@@ -58,6 +59,16 @@ CREATE TABLE "Log" (
     "parent_id" int NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT "fk_log_user" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Notification"(
+    "id" serial primary key,
+    "todo_id" uuid NOT NULL,
+    "user_id" uuid NOT NULL,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT "fk_notification_todo" FOREIGN KEY ("todo_id") REFERENCES "Todo" ("id") ON DELETE CASCADE,
+    CONSTRAINT "fk_notification_user" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE CASCADE
 );
 
 -- CreateTable

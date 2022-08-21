@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { REQUEST } from '@nestjs/core';
 import { User } from '../user/types/User.type';
-import { USER } from 'src/constants';
+import { USER } from 'src/utils/constants';
 
 export const sessionUserFactory = [
   {

@@ -9,7 +9,8 @@ WORKDIR /home/node/backend
 COPY package*.json ./
 
 # run npm install 
-RUN npm ci --silent
+RUN npm ci 
+#--silent
 
 # copy the generated modules and all other files to the container
 COPY . .

@@ -1,12 +1,18 @@
-import { Global, Module } from '@nestjs/common';
-import { CONNECTION } from '../constants';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import configuration from 'src/config/configuration';
+import { CONNECTION } from '../utils/constants';
 import { PoolManager } from './database-pool.service';
 import { connectionFactory } from './database.provider';
 
-
-@Global()
 @Module({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '../.env',
+      load: [configuration],
+    }),
+  ],
   providers: [PoolManager, connectionFactory],
   exports: [CONNECTION],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
