@@ -3,7 +3,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PoolClient } from 'pg';
 import { Cron } from '@nestjs/schedule';
-import { CONNECTION } from 'src/utils/constants';
+import { CONNECTION, CRON_ENABLED } from 'src/utils/constants';
 const { fork } = require('child_process');
 const path = require('path');
 @Injectable()
@@ -12,12 +12,16 @@ export class TasksService {
   constructor(
     private readonly config: ConfigService,
     @Inject(CONNECTION) private readonly pgClient: PoolClient,
-  ) {}
+  ) { }
   async onModuleInit() {
     this.logger.log('TasksService is initialized');
   }
   @Cron('00 * * * * *')
   handleCron() {
+    if (!this.config.get(CRON_ENABLED) === false) {
+      return;
+    }
+    this.logger.log('Cron is running');
     this.logger.debug('Called when the current second is 60');
     const main_fork = fork(path.join(__dirname, './must-notify.js'));
     main_fork.on('message', (msg) => {

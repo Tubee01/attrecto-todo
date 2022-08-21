@@ -6,3 +6,4 @@ export const APP_SECRET = 'APP_SECRET';
 export const USER = 'USER';
 export const SMTP_SETTINGS = 'SMTP_SETTINGS';
 export const SMTP = 'SMTP';
+export const CRON_ENABLED = 'CRON_ENABLED';
