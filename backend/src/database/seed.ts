@@ -1,6 +1,6 @@
 import { CreateUserDTO } from 'src/endpoints/user/dtos/create-user.dto';
 import { Pool } from 'pg';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import configuration from 'src/config/configuration';
 const config = configuration();
 const userData: CreateUserDTO[] = [

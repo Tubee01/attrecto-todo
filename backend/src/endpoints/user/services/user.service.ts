@@ -3,7 +3,7 @@ import { PoolClient } from 'pg';
 import { CONNECTION } from 'src/utils/constants';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { User } from '../types/User.type';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { buildUpdateQuery } from 'src/database/helpers';
 
 @Injectable()

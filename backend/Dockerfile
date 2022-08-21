@@ -1,6 +1,6 @@
 ### Build Step
 # pull the Node.js Docker image
-FROM node:18-alpine as builder
+FROM node:18 as builder
 
 # change working directory
 WORKDIR /home/node/backend
@@ -9,8 +9,8 @@ WORKDIR /home/node/backend
 COPY package*.json ./
 
 # run npm install 
-RUN npm ci 
-#--silent
+RUN npm ci
+# --silent
 
 # copy the generated modules and all other files to the container
 COPY . .
