@@ -37,3 +37,13 @@ export function stringAvatar(name: string) {
 export function isUUID(uuid: string) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uuid);
 }
+// getCookies
+// @https://stackoverflow.com/questions/4810841/how-can-i-get-a-javascript-cookie-by-name
+export function getCookies(name: string) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop()?.split(';')[0];
+    }
+    return undefined;
+}

@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { get } from "../lib/api";
+import { getCookies } from "../lib/helpers";
 type User = {
     id: string;
     name: string;
@@ -37,6 +39,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     });
     useEffect(() => {
         const getStatus = async () => {
+            const cookie = getCookies('connect.sid');
+            if (!cookie) {
+                return setLoading(false);
+            }
             const response = await get("/auth/status");
             const user: User = response.data;
             if (response.status === 1) {

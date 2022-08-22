@@ -17,7 +17,7 @@ export const AuthLogin = () => {
         const LoginIn = async () => {
             const response = await post('/auth/login', formData);
             if (response.status === 1) {
-                setAuth?.({ isAuthenticated: true });
+                setAuth?.({ isAuthenticated: true, ...response.data });
                 navigate('/');
             }
             setError(response.message);

@@ -6,12 +6,13 @@ import { AuthService } from '../services/auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@Body() body: any, @Req() req) {
     const expires = req.session.cookie._expires;
-    return { message: 'Authorized', expires };
+    const { user } = req.session.passport;
+    return { user, expires };
   }
   @Get('status')
   @UseGuards(AuthenticationGuard)
