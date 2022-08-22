@@ -11,27 +11,35 @@ const AuthRegistration = () => {
         password: ''
     });
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<boolean>(false);
     const [isRegistratingIn, setIsRegistratingIn] = useState(false);
+    const [withLogin, setWithLogin] = useState(false);
     const setAuth = useAuthContext()?.setAuth;
 
     useEffect(() => {
         const registration = async () => {
             const response = await post('/auth/registration', formData);
             if (response.status === 1) {
-                const response = await post('/auth/login', formData);
-                if (response.status === 1) {
-                    setAuth?.({ isAuthenticated: true });
-                    navigate('/');
+                if (withLogin) {
+                    const response = await post('/auth/login', formData);
+                    if (response.status === 1) {
+                        setAuth?.({ isAuthenticated: true, ...response.data });
+                        navigate('/');
+                    }
                 }
+                setIsRegistratingIn(false);
+                setSuccess(true);
+                return;
             }
+            setIsRegistratingIn(false);
+            setError(response.message);
+            setSuccess(false);
+
         };
         if (isRegistratingIn) {
             registration();
         }
-        return () => {
-            setIsRegistratingIn(false);
-        };
     }, [isRegistratingIn]);
-    return [{ error, isRegistratingIn }, setFormData, setIsRegistratingIn, setError] as const;
+    return [{ error, isRegistratingIn, success }, setFormData, setIsRegistratingIn, setError, setWithLogin] as const;
 };
 export default AuthRegistration;

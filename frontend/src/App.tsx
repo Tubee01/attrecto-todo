@@ -14,15 +14,14 @@ const App = () => {
   const isLoading = value?.isLoading;
   const location = useLocation();
   const navigate = useNavigate();
-  if (location.pathname !== "/" && !auth?.isAuthenticated) {
+  if ((location.pathname !== "/" && location.pathname !== "/registration") && !auth?.isAuthenticated) {
     navigate('/');
   }
-
 
   let routes = (
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/registration" element={<Registration />} />
+      <Route path="/registration" element={<Registration withLogin />} />
     </Routes>
   );
 
@@ -30,7 +29,7 @@ const App = () => {
     routes = (
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/todos" element={<Todos />} />
+        <Route path="/create-user" element={<Registration withLogin={false} />} />
       </Routes>
     );
   }

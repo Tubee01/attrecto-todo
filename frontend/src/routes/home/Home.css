@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    margin: 1rem;
+    padding: 1rem;
+    padding-right: 0;
+}
+
+.btn-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.list-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 1rem;
+    max-height: 750px;
+    overflow: auto;
+}
+
+@media screen and (max-width: 768px) {
+    .list-container {
+        max-height: 600px;
+    }
+
+    @media screen and (max-height: 860px) {
+
+        .container {
+            height: auto;
+        }
+    }
+}

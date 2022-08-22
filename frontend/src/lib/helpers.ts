@@ -47,3 +47,10 @@ export function getCookies(name: string) {
     }
     return undefined;
 }
+// html input date format
+export function htmlInputDateFormat(date: Date) {
+    // get month in 2 digit
+    const month = date.getMonth() + 1;
+    const monthString = month < 10 ? `0${month}` : month;
+    return `${date.getFullYear()}-${monthString}-${date.getDate()}`;
+}
