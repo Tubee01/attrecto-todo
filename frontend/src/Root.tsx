@@ -5,8 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Container from '@mui/material/Container';
 import LocalizationProvider from "./context/LocalizationContext";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { huHU } from '@mui/material/locale';
-import { ConfirmProvider } from "./context/ConfirmContext";
+import ConfirmationModalContextProvider from "./context/ConfirmModalContext";
 
 const theme = createTheme(
     // optional HU locale
@@ -16,7 +15,7 @@ function Root() {
     return (
         <ThemeProvider theme={theme}>
             <AuthProvider >
-                <ConfirmProvider>
+                <ConfirmationModalContextProvider>
                     <LocalizationProvider>
                         <BrowserRouter>
                             <CssBaseline />
@@ -25,7 +24,7 @@ function Root() {
                             </Container>
                         </BrowserRouter>
                     </LocalizationProvider>
-                </ConfirmProvider>
+                </ConfirmationModalContextProvider>
             </AuthProvider >
         </ThemeProvider >
     );

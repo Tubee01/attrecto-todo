@@ -1,6 +1,5 @@
 
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
@@ -8,6 +7,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import AuthRegistration from '../../api/auth/registration';
+import UserEdit, { IUser } from './UserEdit';
 
 const UserCreate = ({ withLogin }: { [key: string]: any }) => {
     const [formData, updateFormData] = useState({
@@ -28,16 +28,8 @@ const UserCreate = ({ withLogin }: { [key: string]: any }) => {
         setWithLogin(withLogin);
         setIsRegistratingIn?.(true);
     };
-    const handleChange = (e: any) => {
-        updateFormData({
-            ...formData,
-            // Trimming any whitespace
-            [e.target.name]: e.target.value.trim(),
-        });
-    };
     useEffect(() => {
         if (error) {
-            console.log(error);
             setTimeout(() => {
                 setError?.(null);
             }, 3600);
@@ -58,80 +50,28 @@ const UserCreate = ({ withLogin }: { [key: string]: any }) => {
                 </Typography>
             </Box >
             <Box component="form" onSubmit={regIn} sx={{ mt: 3 }}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-
-                        <TextField
-                            name="name"
-                            required
-                            fullWidth
-                            id="fullName"
-                            label="Full name"
-                            autoFocus
-                            value={formData.name}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="new-password"
-                            value={formData.password}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            required
-                            fullWidth
-                            name="password1"
-                            label="Password"
-                            type="password"
-                            id="password1"
-                            autoComplete="new-password"
-                            value={formData.password1}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    {withLogin &&
-                        <Grid container item xs={12}>
-                            <Grid item xs={3} sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}>
-                                <Checkbox required value="allowExtraEmails" color="primary" />
-                            </Grid>
-                            <Grid item xs={9}>
-                                <Link target="_blank" href="http://retek.hu" variant="body2">
-                                    I agree to the terms and conditions of the software,
-                                </Link>
-                                <small style={{
-                                    opacity: 0.5,
-                                }}>
-                                    &nbsp;and hereby sign away my rights just to use this app.
-                                </small>
-                            </Grid>
+                <UserEdit user={formData as IUser} handleChange={updateFormData} />,
+                {withLogin &&
+                    <Grid container item xs={12}>
+                        <Grid item xs={3} sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            <Checkbox required value="allowExtraEmails" color="primary" />
                         </Grid>
-                    }
-                </Grid>
+                        <Grid item xs={9}>
+                            <Link target="_blank" href="http://retek.hu" variant="body2">
+                                I agree to the terms and conditions of the software,
+                            </Link>
+                            <small style={{
+                                opacity: 0.5,
+                            }}>
+                                &nbsp;and hereby sign away my rights just to use this app.
+                            </small>
+                        </Grid>
+                    </Grid>
+                }
                 <Button
                     type="submit"
                     fullWidth

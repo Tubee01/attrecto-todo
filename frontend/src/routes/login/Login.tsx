@@ -25,7 +25,6 @@ const Login = () => {
     };
     useEffect(() => {
         if (error) {
-            console.log(error);
             setTimeout(() => {
                 setError?.(null);
             }, 3600);

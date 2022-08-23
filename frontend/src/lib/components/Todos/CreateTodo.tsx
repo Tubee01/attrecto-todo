@@ -1,6 +1,7 @@
 import { Box, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
 import { useState } from "react";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { post } from "../../api";
 
 interface Todo {
     title: string;
@@ -27,9 +28,14 @@ const CreateTodo = () => {
     const onChangeDateTill = (date: Date | null) => {
         setTodo({ ...todo, date_till: date });
     }
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(todo);
+        const response = await post('/todo', todo);
+        if (response.status === 1) {
+            return alert("Todo created successfully");
+        }
+        return alert("Todo not created");
+
     }
     return (
         <Box component="form" onSubmit={onSubmit}>

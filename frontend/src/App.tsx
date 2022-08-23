@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
-import { AuthContext } from "./context/AuthContext";
+import { useAuthContext } from "./context/AuthContext";
 import Login from "./routes/login/Login";
 import Home from "./routes/home/Home";
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -9,7 +9,7 @@ import Registration from "./routes/registration/Registration";
 import Todos from "./routes/todo/Todos";
 
 const App = () => {
-  const value = useContext(AuthContext);
+  const value = useAuthContext()
   const auth = value?.auth;
   const isLoading = value?.isLoading;
   const location = useLocation();

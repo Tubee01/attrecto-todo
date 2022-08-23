@@ -1,5 +1,5 @@
 import { Avatar, Grid } from "@mui/material";
-import { stringAvatar } from "../../helpers";
+import { isUUID, stringAvatar } from "../../helpers";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -8,43 +8,80 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { ListAlt } from "@mui/icons-material";
-import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { ConfirmContext, ConfirmContextProps } from "../../../context/ConfirmContext";
+import { useEffect, useState } from "react";
+import { useAuthContext } from "../../../context/AuthContext";
+import { useConfirmationModalContext } from "../../../context/ConfirmModalContext";
+import { del, put } from "../../api";
+import UserEdit, { IUser } from "./UserEdit";
+import UserUpdate from "../../api/user/update";
 
-export interface User {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-    updatedAt: Date;
-    admin: boolean;
-}
+
 interface UsersListProps {
-    users: User[];
+    users: IUser[];
 }
 const UsersList = ({ users }: UsersListProps) => {
-    const conFirmDialog = useContext(ConfirmContext);
-    const value = useContext(AuthContext);
+    const [usersList, setUsersList] = useState(users);
+    const [{ isError, isSuccess, formData, isLoading }, setFormData, setIsLoading, setIsSuccess, setIsError] = UserUpdate();
+    const conFirmDialog = useConfirmationModalContext();
+    const value = useAuthContext();
     const auth = value?.auth;
+
     // delete user 
-    const deleteUser = (id: string) => {
-        console.log(id)
+    const deleteUser = async (id: string) => {
+        const response = await del(`user/${id}`);
+        if (response.status === 1) {
+            setUsersList(usersList.filter(user => user.id !== id));
+            return alert("User deleted successfully");
+        }
+        return alert("User not deleted");
+
+    }
+    // save user
+    const saveUser = async () => {
+        setIsLoading(true);
     }
     // open confirm dialog
-    const openConfirmDeleteDialog = (user: User) => {
-        conFirmDialog?.setTitle("Delete User");
-        conFirmDialog?.setMessage("Are you sure you want to delete this user?");
-        conFirmDialog?.setOnConfirm(
-           () => deleteUser(user.id)
+    const openUserEditDialog = async (user: IUser) => {
+        if (!user || !isUUID(user.id as string)) {
+            return
+        }
+        setFormData(user);
+        const result = await conFirmDialog.showConfirmation(
+            'User Edit',
+            <UserEdit user={user as IUser} handleChange={setFormData} />,
+            'Save'
         );
-        conFirmDialog?.setOpen(true);
+        result && saveUser && saveUser();
     }
+    // open confirm dialog
+    const openConfirmDeleteDialog = async (user: IUser) => {
+        const result = await conFirmDialog.showConfirmation(
+            'Delete Confirmation!',
+            'Are you sure you want to delete this user?'
+        );
+        result && deleteUser && deleteUser(user.id as string);
+    }
+
+    useEffect(() => {
+        if (isSuccess) {
+            setUsersList(usersList.map(user => {
+                if (user.id === formData.id) {
+                    return formData;
+                }
+                return user;
+            }));
+            alert("User updated successfully");
+            setIsSuccess(false);
+        }
+        if (isError) {
+            setIsError(null);
+            alert("User not updated message: " + isError);
+        }
+    }, [isSuccess, isError]);
     return (
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <Grid container sx={{ gap: '1rem', }}  >
-                {users.map((user) => (
+                {usersList.map((user) => (
                     <ListItem
                         key={user.id}
                         sx={{
@@ -70,7 +107,7 @@ const UsersList = ({ users }: UsersListProps) => {
                                         </Button>
                                     </Grid>
                                     <Grid item xs={12} md={6} lg={3}>
-                                        <Button fullWidth variant="outlined" startIcon={<EditIcon />}>
+                                        <Button onClick={() => openUserEditDialog(user)} fullWidth variant="outlined" startIcon={<EditIcon />}>
                                             Edit
                                         </Button>
                                     </Grid>
