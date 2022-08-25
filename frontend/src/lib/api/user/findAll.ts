@@ -3,16 +3,16 @@ import { get } from "..";
 
 
 const UserFindAll = () => {
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isUserFindAllError, setError] = useState<string | null>(null);
+    const [isUserFindAllLoading, setIsLoading] = useState<boolean>(false);
     const [users, setUsers] = useState([]);
-    const [formData, setFormData] = useState({
+    const [userFindAllData, setFormData] = useState({
         searchString: '',
     });
     useEffect(() => {
         const findAll = async () => {
             const urlSrcParams = {
-                s: formData.searchString,
+                s: userFindAllData.searchString,
             }
             setIsLoading(true);
             const response = await get(`user?${new URLSearchParams(urlSrcParams)}`);
@@ -22,13 +22,13 @@ const UserFindAll = () => {
             setError(response.message);
             setIsLoading(false);
         }
-        if (isLoading) {
+        if (isUserFindAllLoading) {
             findAll();
         }
         return () => {
             setIsLoading(false);
         }
-    }, [isLoading]);
-    return [{ error, isLoading, users }, setFormData, setIsLoading, setError] as const;
+    }, [isUserFindAllLoading]);
+    return [{ isUserFindAllError, isUserFindAllLoading, users }, setFormData, setIsLoading, setError] as const;
 }
 export default UserFindAll;

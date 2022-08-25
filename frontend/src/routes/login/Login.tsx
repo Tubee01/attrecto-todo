@@ -29,7 +29,7 @@ const Login = () => {
                 setError?.(null);
             }, 3600);
         }
-    }, [error])
+    }, [error, setError]);
 
 
     return (

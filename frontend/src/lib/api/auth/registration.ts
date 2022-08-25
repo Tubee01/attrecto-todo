@@ -34,7 +34,6 @@ const AuthRegistration = () => {
             setIsRegistratingIn(false);
             setError(response.message);
             setSuccess(false);
-
         };
         if (isRegistratingIn) {
             registration();

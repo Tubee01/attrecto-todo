@@ -3,7 +3,7 @@ import { useState } from "react";
 
 interface IDynamicModal {
     title: string;
-    confirmText?: string;
+    confirmText?: string | boolean;
     content: string | JSX.Element;
     open: boolean;
     onCancel?: () => void;
@@ -24,16 +24,21 @@ const DynamicModal = ({ title, content, open, onCancel, onConfirm, confirmText =
     return (
         <Dialog open={isOpen} onClose={onModalClose}>
             <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
+            <DialogContent sx={{
+                minWidth: '250px',
+            }}>
                 {content}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onModalClose} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={onModalSubmit} color="primary">
-                    {confirmText}
-                </Button>
+                {confirmText && (
+                    <Button onClick={onModalSubmit} color="primary">
+                        {confirmText}
+                    </Button>
+                )}
+
             </DialogActions>
         </Dialog>
     );

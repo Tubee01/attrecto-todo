@@ -23,4 +23,10 @@ export class AuthController {
   async registration(@Body() body: CreateUserDTO) {
     return this.authService.registration(body);
   }
+  @Get('logout')
+  @UseGuards(AuthenticationGuard)
+  async logout(@Req() req) {
+    req.logout();
+    return { message: 'logout' };
+  }
 }

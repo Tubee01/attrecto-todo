@@ -25,7 +25,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly fileService: FileService,
-  ) {}
+  ) { }
 
   @Post()
   async createUser(@Body() body: CreateUserDTO) {
@@ -57,7 +57,8 @@ export class UserController {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    return this.userService.update(id, body);
+    const { password, ...data } = await this.userService.update(id, body);
+    return data;
   }
   @Post('/:id/image')
   @UseInterceptors(AnyFilesInterceptor())

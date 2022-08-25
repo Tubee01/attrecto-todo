@@ -1,4 +1,4 @@
-import env, { API_COOKIE, API_URL } from "../env";
+import { API_COOKIE, API_URL } from "../env";
 import { removeLeadingAndTrailingSlash } from "../helpers";
 
 export interface Request {
@@ -9,8 +9,6 @@ export interface Request {
     multipart?: boolean;
 }
 
-
-const base = API_URL;
 async function send(request: Request) {
     const { method, path, data, token, multipart } = request;
     const opts: RequestInit = {

@@ -20,11 +20,11 @@ export class UpdateTodoDTO {
   description?: string;
   @IsOptional()
   @IsUUID()
-  userId: string;
+  user_id: string;
   @IsOptional()
   @IsBoolean()
   done?: boolean;
   @IsOptional()
   @IsDateString()
-  dateTill?: string;
+  date_till?: string;
 }

@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useAuthContext } from "./context/AuthContext";
 import Login from "./routes/login/Login";
@@ -6,7 +5,6 @@ import Home from "./routes/home/Home";
 import { useLocation, useNavigate } from 'react-router-dom'
 import PageLoading from "./lib/components/PageLoading";
 import Registration from "./routes/registration/Registration";
-import Todos from "./routes/todo/Todos";
 
 const App = () => {
   const value = useAuthContext()
@@ -14,6 +12,10 @@ const App = () => {
   const isLoading = value?.isLoading;
   const location = useLocation();
   const navigate = useNavigate();
+  if (location.pathname === "/logout") {
+    navigate("/")
+  }
+
   if ((location.pathname !== "/" && location.pathname !== "/registration") && !auth?.isAuthenticated) {
     navigate('/');
   }

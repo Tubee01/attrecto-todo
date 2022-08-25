@@ -1,5 +1,4 @@
 import React, { useContext, useRef, useState } from "react";
-import ConfirmDialog from "../lib/components/ConfirmDialog";
 import DynamicModal from "../lib/components/DynamicModal";
 
 type UseModalShowReturnType = {
@@ -23,7 +22,8 @@ const useModalShow = (): UseModalShowReturnType => {
 };
 
 type ModalContextType = {
-    showConfirmation: (title: string, message: string | JSX.Element, confirmText?: string) => Promise<boolean>;
+    showConfirmation: (title: string, message: string | JSX.Element, confirmText?: string | boolean, onCancel?: Function | undefined, onConfirm?: Function | undefined) => Promise<boolean>;
+
 };
 
 type ConfirmationModalContextProviderProps = {
@@ -34,16 +34,19 @@ const ConfirmationModalContext = React.createContext<ModalContextType>({} as Mod
 
 const ConfirmationModalContextProvider: React.FC<ConfirmationModalContextProviderProps> = (props) => {
     const { setShow, show, onHide } = useModalShow();
-    const [content, setContent] = useState<{ title: string, message: string | JSX.Element, confirmText?: string }>(
+    const [content, setContent] = useState<{ title: string, message: string | JSX.Element, confirmText?: string | boolean, onCancel?: Function | undefined, onConfirm?: Function | undefined }>(
         {
             title: "",
             message: "",
-            confirmText: "",
+            confirmText: false,
+            onCancel: undefined,
+            onConfirm: undefined,
+
         }
     );
     const resolver = useRef<Function>();
 
-    const handleShow = (title: string, message: string | JSX.Element, confirmText?: string): Promise<boolean> => {
+    const handleShow = (title: string, message: string | JSX.Element, confirmText?: string | boolean, onCancel?: Function | undefined, onConfirm?: Function | undefined): Promise<boolean> => {
         setContent({
             title,
             message,
@@ -56,16 +59,25 @@ const ConfirmationModalContextProvider: React.FC<ConfirmationModalContextProvide
     };
 
     const modalContext: ModalContextType = {
+
         showConfirmation: handleShow
     };
 
     const handleOk = () => {
         resolver.current && resolver.current(true);
+        if (content.onConfirm) {
+            // overwriting default behavior
+            return content.onConfirm();
+        }
         onHide();
     };
 
     const handleCancel = () => {
         resolver.current && resolver.current(false);
+        if (content.onCancel) {
+            // overwriting default behavior
+            return content.onCancel();
+        }
         onHide();
     };
 

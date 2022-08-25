@@ -1,54 +1,76 @@
 import { Box, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { post } from "../../api";
+import { post, put } from "../../api";
 
-interface Todo {
+interface ITodo {
+    id?: string
     title: string;
-    description: string;
+    description?: string | null;
     done: boolean;
     date_till?: Date | null;
+    user_id?: string | null;
 }
-const CreateTodo = () => {
-    const [todo, setTodo] = useState<Todo>({
+interface ICreateTodoProps {
+    userId?: string | null;
+    todo?: ITodo | null;
+}
+const CreateOrEditTodo = ({ userId = null, todo = null }: ICreateTodoProps) => {
+    const [formData, setFormData] = useState<ITodo>((todo as ITodo) || {
         title: '',
         description: '',
         done: false,
-        date_till: null
+        date_till: null,
+        user_id: userId
     });
-    const { title, description, done, date_till } = todo;
+    const { title, description, done, date_till } = formData;
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setTodo({ ...todo, [name]: value });
+        setFormData({ ...formData, [name]: value });
     }
     const onChangeDone = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { checked } = e.target;
-        setTodo({ ...todo, done: checked });
+        setFormData({ ...formData, done: checked });
     }
     const onChangeDateTill = (date: Date | null) => {
-        setTodo({ ...todo, date_till: date });
+        setFormData({ ...formData, date_till: date });
     }
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await post('/todo', todo);
+        if (todo) {
+            const response = await put(`/todo/${todo.id as string}`, formData);
+            if (response.status === 1) {
+                return alert("Todo updated successfully");
+            }
+            return alert("Todo not updated");
+
+        }
+        const response = await post('/todo', formData);
         if (response.status === 1) {
             return alert("Todo created successfully");
         }
         return alert("Todo not created");
 
+
     }
+    useEffect(() => {
+        if (userId) {
+            setFormData({ ...formData, user_id: userId as string });
+        }
+
+    }, [userId]);
     return (
         <Box component="form" onSubmit={onSubmit}>
             <Box display="flex" flexDirection="column">
                 <Box marginBottom={2}>
-                    <TextField name="title" required label="Title" value={title} onChange={onChange} />
+                    <TextField fullWidth name="title" required label="Title" value={title} onChange={onChange} />
                 </Box>
                 <Box marginBottom={2}>
-                    <TextField name="description" required label="Description" value={description} onChange={onChange} />
+                    <TextField fullWidth multiline rows={5} name="description" label="Description" value={description} onChange={onChange} />
                 </Box>
                 <Box marginBottom={2}>
                     <DateTimePicker
-                        label="DateTime picker"
+                        label="Due date"
                         value={date_till}
                         onChange={onChangeDateTill}
                         renderInput={(params) => <TextField {...params} />}
@@ -58,10 +80,10 @@ const CreateTodo = () => {
                     <FormControlLabel control={<Checkbox name="done" checked={done} onChange={onChangeDone} />} label="Done" />
                 </Box>
                 <Box marginBottom={2}>
-                    <Button type="submit" variant="contained" color="primary">Create</Button>
+                    <Button type="submit" variant="contained" color="primary">{todo ? 'Save' : 'Create'}</Button>
                 </Box>
             </Box>
         </Box>
     );
 }
-export default CreateTodo;
+export default CreateOrEditTodo;

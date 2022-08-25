@@ -1,4 +1,4 @@
-import { Avatar, Grid } from "@mui/material";
+import { Avatar, Grid, Skeleton } from "@mui/material";
 import { isUUID, stringAvatar } from "../../helpers";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -10,18 +10,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import { ListAlt } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../../context/AuthContext";
-import { useConfirmationModalContext } from "../../../context/ConfirmModalContext";
-import { del, put } from "../../api";
+import { useConfirmationModalContext } from "../../../context/ModalContext";
+import { del } from "../../api";
 import UserEdit, { IUser } from "./UserEdit";
 import UserUpdate from "../../api/user/update";
+import TodoList from "../Todos/TodoList";
+import UserFindAll from "../../api/user/findAll";
 
 
-interface UsersListProps {
-    users: IUser[];
-}
-const UsersList = ({ users }: UsersListProps) => {
-    const [usersList, setUsersList] = useState(users);
-    const [{ isError, isSuccess, formData, isLoading }, setFormData, setIsLoading, setIsSuccess, setIsError] = UserUpdate();
+const UsersList = () => {
+    const [usersList, setUsersList] = useState<[] | IUser[]>([]);
+    const [{ users, isUserFindAllLoading, isUserFindAllError }, setUserFindAllFormData, setIsUserFindAllLoading, setUserFindAllError] = UserFindAll();
+    const [{ isUserUpdateError, isUserUpdateSuccess, isUserUpdateLoading }, setUserUpdateFormData, setIsUserUpdateLoading, setIsUserUpdateError] = UserUpdate();
+
     const conFirmDialog = useConfirmationModalContext();
     const value = useAuthContext();
     const auth = value?.auth;
@@ -38,23 +39,39 @@ const UsersList = ({ users }: UsersListProps) => {
     }
     // save user
     const saveUser = async () => {
-        setIsLoading(true);
+        setIsUserUpdateLoading(true);
     }
+    // open Todos modal
+    const openTodosDialog = async (user: IUser) => {
+        if (!user || !isUUID(user.id as string)) {
+            return
+        }
+        const result = await conFirmDialog.showConfirmation(
+            'User Todos',
+            <TodoList userId={user.id} />,
+            false
+        );
+        result && console.log(result);
+    }
+
     // open confirm dialog
     const openUserEditDialog = async (user: IUser) => {
         if (!user || !isUUID(user.id as string)) {
             return
         }
-        setFormData(user);
+        setUserUpdateFormData(user);
         const result = await conFirmDialog.showConfirmation(
             'User Edit',
-            <UserEdit user={user as IUser} handleChange={setFormData} />,
+            <UserEdit user={user} handleChange={setUserUpdateFormData} />,
             'Save'
         );
         result && saveUser && saveUser();
     }
     // open confirm dialog
     const openConfirmDeleteDialog = async (user: IUser) => {
+        if (!user || !isUUID(user.id as string)) {
+            return
+        }
         const result = await conFirmDialog.showConfirmation(
             'Delete Confirmation!',
             'Are you sure you want to delete this user?'
@@ -63,22 +80,34 @@ const UsersList = ({ users }: UsersListProps) => {
     }
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isUserUpdateSuccess) {
+            const _user: IUser = { ...isUserUpdateSuccess as IUser };
             setUsersList(usersList.map(user => {
-                if (user.id === formData.id) {
-                    return formData;
+                if (user.id === _user.id) {
+                    return _user;
                 }
                 return user;
             }));
             alert("User updated successfully");
-            setIsSuccess(false);
         }
-        if (isError) {
-            setIsError(null);
-            alert("User not updated message: " + isError);
+        if (isUserUpdateError) {
+            alert("User not updated message: " + isUserUpdateError);
+            setIsUserUpdateError(false);
         }
-    }, [isSuccess, isError]);
-    return (
+    }, [isUserUpdateLoading, isUserUpdateError]);
+    useEffect(() => {
+        setIsUserFindAllLoading(true);
+    }, []);
+    useEffect(() => {
+        if (isUserFindAllError) {
+            setUserFindAllError(null);
+            alert("Error fetching users");
+        }
+        if (users) {
+            setUsersList(users);
+        }
+    }, [isUserFindAllLoading, isUserFindAllError]);
+    return isUserFindAllLoading ? (<Skeleton variant="rounded" width={"100%"} height={380} />) : (
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <Grid container sx={{ gap: '1rem', }}  >
                 {usersList.map((user) => (
@@ -102,7 +131,7 @@ const UsersList = ({ users }: UsersListProps) => {
                             {user.id === auth?.user?.id || auth?.user?.admin ? (
                                 <>
                                     <Grid item xs={12} md={12} lg={3}>
-                                        <Button fullWidth variant="outlined" startIcon={<ListAlt />}>
+                                        <Button onClick={() => openTodosDialog(user)} fullWidth variant="outlined" startIcon={<ListAlt />}>
                                             Todos
                                         </Button>
                                     </Grid>

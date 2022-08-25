@@ -5,6 +5,7 @@ import { buildUpdateQuery } from 'src/database/helpers';
 import { UserService } from 'src/endpoints/user/services/user.service';
 import { User } from 'src/endpoints/user/types/User.type';
 import { CreateTodoDTO } from '../dtos/create-todo.dto';
+import { UpdateTodoDTO } from '../dtos/update-todo.dto';
 
 @Injectable()
 export class TodoService {
@@ -12,29 +13,29 @@ export class TodoService {
     @Inject(CONNECTION) private readonly pgClient: PoolClient,
     private readonly userService: UserService,
     @Inject(USER) private readonly sessionUser: User,
-  ) {}
+  ) { }
   async create(body: CreateTodoDTO) {
     const {
       title,
       description = null,
-      userId = this.sessionUser.id,
-      dateTill = null,
+      user_id = this.sessionUser.id,
+      date_till = null,
       done = false,
     } = body;
-    const user = await this.userService.findByUnique(userId);
+    const user = await this.userService.findByUnique(user_id);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
     const query =
       'INSERT INTO "Todo" (title, description, user_id, date_till, done) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-    const values = [title, description, userId, dateTill, done];
+    const values = [title, description, user_id, date_till, done];
     const { rows } = await this.pgClient.query(query, values);
     return rows[0];
   }
-  async update(id: string, body: CreateTodoDTO) {
-    const { title, description = undefined, userId, ...rest } = body;
+  async update(id: string, body: UpdateTodoDTO) {
+    const { title, description = undefined, user_id, ...rest } = body;
     const user = await this.userService.findByUnique(
-      userId || this.sessionUser.id,
+      user_id || this.sessionUser.id,
     );
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
@@ -45,7 +46,7 @@ export class TodoService {
     }
     const { query, values } = buildUpdateQuery(
       'Todo',
-      { title, description, ...rest },
+      { title, description, ...rest, user_id: user.id },
       id,
     );
     const { rows } = await this.pgClient.query(query, values);

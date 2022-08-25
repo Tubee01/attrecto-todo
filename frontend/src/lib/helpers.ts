@@ -34,7 +34,7 @@ export function stringAvatar(name: string) {
 }
 // isUUID
 // @https://stackoverflow.com/questions/7905929/how-to-test-valid-uuid-guid-in-javascript
-export function isUUID(uuid: string) {
+export function isUUID(uuid: string): boolean {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uuid);
 }
 // getCookies
@@ -47,10 +47,14 @@ export function getCookies(name: string) {
     }
     return undefined;
 }
-// html input date format
-export function htmlInputDateFormat(date: Date) {
-    // get month in 2 digit
-    const month = date.getMonth() + 1;
-    const monthString = month < 10 ? `0${month}` : month;
-    return `${date.getFullYear()}-${monthString}-${date.getDate()}`;
+// setCookies
+// @https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+export function setCookies(name: string, value: string, days: number) {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+}
+// deleteCookies
+// @https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+export function deleteCookies(name: string) {
+    setCookies(name, '', -1);
 }

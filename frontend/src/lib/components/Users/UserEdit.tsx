@@ -1,5 +1,6 @@
-import { Box, Grid, TextField, Typography } from "@mui/material"
+import { Box, Grid, TextField } from "@mui/material"
 import { useState } from "react";
+import { isUUID } from "../../helpers";
 
 export interface IUser {
     id?: string;
@@ -57,7 +58,7 @@ const UserEdit = ({ user, handleChange }: IUserEditProps) => {
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        required
+                        required={(user.id && isUUID(user.id) && user.password && user.password?.length > 0) || !isUUID(user.id as string) ? true : false}
                         fullWidth
                         name="password"
                         label="Password"
@@ -70,7 +71,7 @@ const UserEdit = ({ user, handleChange }: IUserEditProps) => {
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        required
+                        required={user.password && user.password?.length > 0 ? true : false}
                         fullWidth
                         name="password1"
                         label="Password"

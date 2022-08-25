@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { get } from "..";
-import { ITodo } from "../../components/Todos/TodosList";
+import { ITodo } from "../../components/Todos/TodoList";
 import { isUUID } from "../../helpers";
 
 const TodoFindAll = () => {
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isTodoFindAllError, setIsError] = useState<string | null>(null);
+    const [isTodoFindAllLoading, setIsLoading] = useState<boolean>(false);
     const [todos, setTodos] = useState<ITodo[]>([]);
     const [formData, setFormData] = useState({
         searchString: '',
@@ -16,25 +16,24 @@ const TodoFindAll = () => {
             const urlSrcParams = {
                 s: formData.searchString,
             }
-            setIsLoading(true);
             let url = `todo`;
             if (isUUID(formData.userId)) {
-                url += `/${formData.userId}`;
+                url += `/user/${formData.userId}`;
             }
             const response = await get(`${url}?${new URLSearchParams(urlSrcParams)}`);
             if (response.status === 1) {
                 setTodos(response.data);
             }
-            setError(response.message);
+            setIsError(response.message);
             setIsLoading(false);
         }
-        if (isLoading) {
+        if (isTodoFindAllLoading) {
             findAll();
         }
         return () => {
             setIsLoading(false);
         }
-    }, [isLoading]);
-    return [{ error, isLoading, todos }, setFormData, setIsLoading, setError] as const;
+    }, [isTodoFindAllLoading]);
+    return [{ isTodoFindAllError, isTodoFindAllLoading, todos }, setFormData, setIsLoading, setIsError] as const;
 }
 export default TodoFindAll;

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { get } from "../lib/api";
-import { getCookies } from "../lib/helpers";
+import { API_COOKIE } from "../lib/env";
+import { deleteCookies, getCookies } from "../lib/helpers";
 type User = {
     id: string;
     name: string;
@@ -15,6 +16,7 @@ interface IAuthContext {
     };
     setAuth: Function;
     isLoading: boolean;
+    onLogout: Function;
 }
 interface Props {
     children: React.ReactNode
@@ -24,6 +26,16 @@ export const AuthContext = createContext<IAuthContext | null>(null);
 export const useAuthContext = () => {
     return useContext(AuthContext);
 };
+//logout
+export const onLogout = async () => {
+    try {
+        await get('/api/auth/logout');
+    } catch (e) {
+        console.log(e);
+    }
+    deleteCookies(API_COOKIE as string);
+    window.location.href = '/' as string;
+}
 export const AuthProvider = ({ children }: Props): JSX.Element => {
     const [isLoading, setLoading] = useState(true);
     const [auth, setAuth] = useState({
@@ -53,7 +65,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     });
     return (
         <>
-            <AuthContext.Provider value={{ auth, setAuth, isLoading }}>
+            <AuthContext.Provider value={{ auth, setAuth, isLoading, onLogout }}>
                 {children}
             </AuthContext.Provider>
         </>
