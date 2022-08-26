@@ -9,7 +9,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(@Body() body: any, @Req() req) {
+  async login(@Req() req) {
     const expires = req.session.cookie._expires;
     const { user } = req.session.passport;
     return { user, expires };

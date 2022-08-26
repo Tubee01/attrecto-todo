@@ -16,7 +16,7 @@ async function bootstrap() {
       const email = await service.sendMail(msg);
       process.send(email);
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       process.send({ error: e.message });
     } finally {
       logger.log('Closing app');

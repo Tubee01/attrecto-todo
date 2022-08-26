@@ -11,6 +11,7 @@ COPY package*.json ./
 # run npm install 
 RUN npm ci
 # --silent
+RUN npm i -D @nestjs/cli
 
 # copy the generated modules and all other files to the container
 COPY . .

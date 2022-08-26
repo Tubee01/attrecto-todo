@@ -16,7 +16,7 @@ const Login = () => {
         setFormData?.(formData);
         setIsLoggingIn?.(true);
     };
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)  => {
         updateFormData({
             ...formData,
             // Trimming any whitespace
