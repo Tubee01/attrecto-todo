@@ -3,7 +3,7 @@
 
 There is two .env that must exists
 [Frontend Config file example here](./frontend/.env.example)
-AND
+&
 [Global Config file example here](./.env.example)
 
 ### Build with Docker
@@ -23,6 +23,17 @@ POSTGRES_COLLATION=Hungarian_CI_AS
 ```
  cd ./backend && npm run start:dev
  cd ./frontend && npm run start
+```
+
+### Cron and SMTP settings
+If cron is enabled, services is sending email(s)
+to the user for every todo, that has due date.(In the last hour, only once)
+```
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=admin
+SMTP_PASSWORD=longestpassword
+CRON_ENABLED=false
 ```
 
 #### Purpose
